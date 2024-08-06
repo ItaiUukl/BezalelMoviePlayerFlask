@@ -1,10 +1,11 @@
 @font-face {
     font-family: 'abraham';
-    src: url('fonts\Abraham\Abraham-Medium.otf') format('opentype');
+    src: url('fonts/Abraham/Abraham-Medium.otf') format('opentype');
     font-weight: normal;
     font-style: normal;
 }
 body {
+    overflow: auto;
     font-family: 'abraham', sans-serif;
 }
 
