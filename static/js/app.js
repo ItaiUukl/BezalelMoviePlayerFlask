@@ -24,6 +24,11 @@ const playMovie = function (name) {
 
 document.addEventListener('contextmenu', event => event.preventDefault());
 
+document.addEventListener('mousedown', (e) => {
+    if(e.button === 1){
+        e.preventDefault();
+    }
+});
 document.addEventListener('DOMContentLoaded', () => {
     const myList = document.getElementById('lista');
     const listItems = myList.querySelectorAll('li');
