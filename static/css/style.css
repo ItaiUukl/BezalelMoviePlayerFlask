@@ -6,14 +6,28 @@
 }
 html {
   height: 100%;
+    margin: 0;
 }
 body {
   min-height: 100%;
+    margin: 0;
     overflow: auto;
     font-family: 'abraham', sans-serif;
+    background-color: black;
+
 }
-video, input {
-    display: block;
+video {
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+video::-webkit-media-controls {
+    display:none !important;
 }
 
 input {
@@ -42,9 +56,14 @@ ul {
     top: 0;
     overflow: auto; /* Enable scrolling if the sidenav has too much content */
     text-align: right;
-    display: none;
+    /*display: none;*/
     /*transition: right 0.5s ease-in-out; /* Animate the 'right' property */
   }
+
+::-webkit-scrollbar {
+    width: 0px;
+    background: transparent; /* make scrollbar transparent */
+}
 
   li a {
     display: block;

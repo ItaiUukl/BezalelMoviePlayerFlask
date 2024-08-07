@@ -1,25 +1,29 @@
 let moviesDict = {};
+let moviesNamesList = [];
 let playedMovie = '';
+let currMovieIndex = 0;
 
 
 const fetchMovies = async () => {
     const res = await fetch('/movies')
     moviesDict = await res.json()
-    for (let name in moviesDict) {
-        moviesDict[name]["file"] = await fetch('/movie/' + name);
-    }
+    moviesNamesList = Object.keys(moviesDict);
 };
+
 
 const playMovie = function (name) {
     const videoNode = document.querySelector('video')
-
+    if (playedMovie === '') {
+        enterFullScreen()
+    }
     if (name !== playedMovie) {
         videoNode.src = moviesDict[name]["url"];
         playedMovie = name;
     }
     videoNode.pause();
     videoNode.currentTime = 0;
-    videoNode.play().then(() => videoNode.style.display = 'block');
+    videoNode.play().then(() => videoNode.style.display = 'flex');
+    videoNode.addEventListener('ended', playNextMovie);
 };
 
 document.addEventListener('contextmenu', event => event.preventDefault());
@@ -29,12 +33,35 @@ document.addEventListener('mousedown', (e) => {
         e.preventDefault();
     }
 });
+
+const enterFullScreen = () => {
+    if (document.documentElement.requestFullscreen) {
+      document.documentElement.requestFullscreen();
+    } else if (document.documentElement.mozRequestFullScreen) { // Firefox
+      document.documentElement.mozRequestFullScreen();
+    } else if (document.documentElement.webkitRequestFullscreen) { // Chrome, Safari and Opera
+      document.documentElement.webkitRequestFullscreen();
+    } else if (document.documentElement.msRequestFullscreen) { // IE/Edge
+        document.documentElement.msRequestFullscreen();
+    }
+}
+const playNextMovie = () => {
+    currMovieIndex = (currMovieIndex + 1) % moviesNamesList.length;
+    playMovie(moviesNamesList[currMovieIndex])
+}
+
+document.documentElement.addEventListener('loadeddata', (event) => {
+    if (moviesNamesList.length > 0) {
+        playMovie(moviesNamesList[0]);
+    }
+    enterFullScreen();
+})
+
 document.addEventListener('DOMContentLoaded', () => {
     const myList = document.getElementById('lista');
     const listItems = myList.querySelectorAll('li');
 
     const videoNode = document.querySelector('video')
-
 
     videoNode.style.display = 'none';
     videoNode.addEventListener("click", event => event.preventDefault())
@@ -109,5 +136,4 @@ document.addEventListener('DOMContentLoaded', () => {
             addListItem(name, moviesDict[name]["creators"])
         }
     })
-
 });
