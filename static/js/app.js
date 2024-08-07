@@ -13,12 +13,11 @@ const fetchMovies = async () => {
 const playMovie = function (name) {
     const videoNode = document.querySelector('video')
 
-    videoNode.style.display = 'block';
     if (name !== playedMovie) {
         videoNode.src = moviesDict[name]["url"];
         playedMovie = name;
     }
-    videoNode.play().then()
+    videoNode.play().then(() => videoNode.style.display = 'block');
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -34,8 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const showMenu = function () { // function to show/hide menu
         if (myList.style.display === 'none' || myList.style.display === '') {
             myList.style.display = 'block';
-            videoNode.style.display = 'none';
-            videoNode.pause().then()
+            videoNode.pause()
         } else {
             myList.style.display = 'none';
         }
