@@ -74,10 +74,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (myList.style.display === 'none' || myList.style.display === '') {
             myList.style.display = 'block';
             videoNode.pause()
+
+          document.body.classList.remove("noCursor");
         } else {
             myList.style.display = 'none';
             imageNode.style.display = 'none';
             videoNode.style.display = 'block'
+
+          document.body.classList.add("noCursor");
             videoNode.play().then();
         }
     }
@@ -110,6 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
         myList.style.display = 'none';
         imageNode.style.display = 'none';
         videoNode.style.display = 'block'
+          document.body.classList.add("noCursor");
         playMovie(movieName);
     }
     const handleItemClick = (li, type, mainText) => {
