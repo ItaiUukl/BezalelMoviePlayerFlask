@@ -34,8 +34,7 @@ ul {
     margin: 0;
     padding: 0;
     width: 50%;
-    background-color: #000000;
-    opacity: 70%;
+    background-color: rgba(0,0,0, 0.5);
     height: 100%; /* Full height */
     position: absolute;
     right: 0;  /*Align to the right side of the page */
@@ -49,7 +48,7 @@ ul {
 
   li a {
     display: block;
-    color: #777;
+    color: #ddd;
     padding: 8px 16px;
     text-decoration: none;
     text-align: right;
@@ -57,8 +56,8 @@ ul {
 
   /* Change the link color on hover */
   li a:hover {
-    background-color: #555;
-    color: white;
+    background-color: #ddd;
+    color: black;
   }
 .main-text, .secondary-text {
     display: inline-block; /* Display elements inline-block */
