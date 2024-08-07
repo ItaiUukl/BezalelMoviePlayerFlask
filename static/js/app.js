@@ -62,11 +62,14 @@ document.addEventListener('DOMContentLoaded', () => {
         event.stopPropagation();
     });
 
-    const playMovieOnClick = function (event) {
+    const playMovieOnClick = function (movieName) {
         myList.style.display = 'none';
-
-        const itemText = event.target.textContent;
-        playMovie(itemText);
+        playMovie(movieName);
+    }
+    const handleItemClick = (li, type, mainText) => {
+        li.addEventListener(type, () => {
+            playMovieOnClick(mainText);
+        })
     }
 
     listItems.forEach(item => {
@@ -90,8 +93,8 @@ document.addEventListener('DOMContentLoaded', () => {
         a.appendChild(secondarySpan);
         li.appendChild(a);
 
-        li.addEventListener('click', playMovieOnClick)
-        li.addEventListener("contextmenu", playMovieOnClick)
+        handleItemClick(li, 'click', mainText)
+        handleItemClick(li, 'contextmenu', mainText)
 
         myList.appendChild(li);
     }
