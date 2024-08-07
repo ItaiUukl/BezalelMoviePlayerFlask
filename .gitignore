@@ -162,3 +162,5 @@ cython_debug/
 
 # Large files folders
 static/data/movies/
+static/data/images/
+static/data/csv/

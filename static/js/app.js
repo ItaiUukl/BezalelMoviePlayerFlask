@@ -17,8 +17,12 @@ const playMovie = function (name) {
         videoNode.src = moviesDict[name]["url"];
         playedMovie = name;
     }
+    videoNode.pause();
+    videoNode.currentTime = 0;
     videoNode.play().then(() => videoNode.style.display = 'block');
 };
+
+document.addEventListener('contextmenu', event => event.preventDefault());
 
 document.addEventListener('DOMContentLoaded', () => {
     const myList = document.getElementById('lista');
@@ -36,9 +40,11 @@ document.addEventListener('DOMContentLoaded', () => {
             videoNode.pause()
         } else {
             myList.style.display = 'none';
+            videoNode.play().then();
         }
     }
     document.body.addEventListener('click', showMenu);
+    document.body.addEventListener('contextmenu', showMenu);
 
     myList.addEventListener('mouseover', (event) => {
         if (event.target.tagName === 'LI' || event.target.closest('li')) {
@@ -51,6 +57,11 @@ document.addEventListener('DOMContentLoaded', () => {
         event.stopPropagation();
     });
 
+    myList.addEventListener('contextmenu', event => event.preventDefault());
+    myList.addEventListener("contextmenu", (event) => {
+        event.stopPropagation();
+    });
+
     const playMovieOnClick = function (event) {
         myList.style.display = 'none';
 
@@ -60,6 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     listItems.forEach(item => {
         item.addEventListener('click', playMovieOnClick)
+        item.addEventListener('contextmenu', playMovieOnClick)
     });
 
     function addListItem(mainText, secondaryText) {
@@ -79,13 +91,14 @@ document.addEventListener('DOMContentLoaded', () => {
         li.appendChild(a);
 
         li.addEventListener('click', playMovieOnClick)
+        li.addEventListener("contextmenu", playMovieOnClick)
 
         myList.appendChild(li);
     }
 
     fetchMovies().then(() => {
         for (let name in moviesDict) {
-            addListItem(name, "author")
+            addListItem(name, moviesDict[name]["creators"])
         }
     })
 
