@@ -7,6 +7,7 @@ from flask import render_template, send_from_directory, jsonify
 app = Flask(__name__)
 
 MOVIES_DIR = 'static/data/movies'
+IMAGES_DIR = 'static/data/images'
 CSV_DIR = 'static/data/csv'
 
 
@@ -17,6 +18,7 @@ def get_vod_setup():
         movie_name = setup_csv.iloc[i]["movieName"]
         setup_dct[movie_name] = setup_csv.drop("movieName", axis=1).iloc[i].to_dict()
         setup_dct[movie_name]["url"] = os.path.join(MOVIES_DIR, setup_csv.iloc[i]["movieFile"])
+        setup_dct[movie_name]["img_url"] = os.path.join(IMAGES_DIR, setup_csv.iloc[i]["imageFile"])
 
     return setup_dct
 

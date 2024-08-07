@@ -12,10 +12,8 @@ const fetchMovies = async () => {
 
 
 const playMovie = function (name) {
-    const videoNode = document.querySelector('video')
-    if (playedMovie === '') {
-        enterFullScreen()
-    }
+    const videoNode = document.getElementById('moviePlayer');
+    enterFullScreen();
     if (name !== playedMovie) {
         videoNode.src = moviesDict[name]["url"];
         playedMovie = name;
@@ -54,16 +52,22 @@ document.documentElement.addEventListener('loadeddata', (event) => {
     if (moviesNamesList.length > 0) {
         playMovie(moviesNamesList[0]);
     }
-    enterFullScreen();
 })
+
+document.documentElement.addEventListener('mousemove', (event) => {
+    if (document.fullscreenElement !== document.documentElement || document.webkitFullscreenElement !== document.documentElement){
+        enterFullScreen()
+    }
+})
+
 
 document.addEventListener('DOMContentLoaded', () => {
     const myList = document.getElementById('lista');
     const listItems = myList.querySelectorAll('li');
 
-    const videoNode = document.querySelector('video')
+    const videoNode = document.getElementById('moviePlayer')
+    const imageNode = document.getElementById('movieImage')
 
-    videoNode.style.display = 'none';
     videoNode.addEventListener("click", event => event.preventDefault())
 
     const showMenu = function () { // function to show/hide menu
@@ -72,6 +76,8 @@ document.addEventListener('DOMContentLoaded', () => {
             videoNode.pause()
         } else {
             myList.style.display = 'none';
+            imageNode.style.display = 'none';
+            videoNode.style.display = 'block'
             videoNode.play().then();
         }
     }
@@ -81,9 +87,15 @@ document.addEventListener('DOMContentLoaded', () => {
     myList.addEventListener('mouseover', (event) => {
         if (event.target.tagName === 'LI' || event.target.closest('li')) {
             const li = event.target.tagName === 'LI' ? event.target : event.target.closest('li');
-            const mainText = li.querySelector('.main-text').textContent;
-            document.body.style.backgroundColor = mainText;
+            imageNode.style.display = 'block';
+            videoNode.style.display = 'none';
+            imageNode.src = moviesDict[li.querySelector('.main-text').textContent]["img_url"];
         }
+    });
+
+    myList.addEventListener('mouseleave', (event) => {
+        imageNode.style.display = 'none';
+        videoNode.style.display = 'block';
     });
     myList.addEventListener('click', (event) => {
         event.stopPropagation();
@@ -96,6 +108,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const playMovieOnClick = function (movieName) {
         myList.style.display = 'none';
+        imageNode.style.display = 'none';
+        videoNode.style.display = 'block'
         playMovie(movieName);
     }
     const handleItemClick = (li, type, mainText) => {
