@@ -34,13 +34,13 @@ ul {
     margin: 0;
     padding: 0;
     width: 50%;
-    background-color: #f1f1f1;
+    background-color: #000000;
     opacity: 70%;
     height: 100%; /* Full height */
-    position: absolute; /* Position the list absolutely */
+    position: absolute;
     right: 0;  /*Align to the right side of the page */
     /*right: 0;  /*Start hidden on the right*/
-    top:0;
+    top: 0;
     overflow: auto; /* Enable scrolling if the sidenav has too much content */
     text-align: right;
     display: none;
@@ -49,7 +49,7 @@ ul {
 
   li a {
     display: block;
-    color: #000;
+    color: #777;
     padding: 8px 16px;
     text-decoration: none;
     text-align: right;
