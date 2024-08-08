@@ -21,13 +21,14 @@ body.noCursor {
 }
 
 body {
-  min-height: 100%;
+  height: 100%;
     margin: 0;
-    overflow: auto;
+    overflow: hidden;
     font-family: 'abraham', sans-serif;
     background-color: black;
     user-select: none;
-
+    display: flex;
+    justify-content: flex-end;
 }
 video {
     position: absolute;
@@ -66,14 +67,22 @@ input {
     color: white;
 }
 
+.menu-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Center content vertically */
+    height: 100%;
+    width: 50%;
+    overflow: hidden;
+    background-color: rgba(0,0,0, 0.5);
+}
+
 ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
-    width: 50%;
-    background-color: rgba(0,0,0, 0.5);
-    height: 100%; /* Full height */
-    position: absolute;
+    width: 100%;
+    max-height: 100vh;
     right: 0;  /*Align to the right side of the page */
     /*right: 0;  /*Start hidden on the right*/
     top: 0;
