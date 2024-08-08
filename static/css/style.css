@@ -99,17 +99,18 @@ ul {
 
   li a {
     display: flex;
-      flex-direction: row-reverse;
+      flex-direction: row;
       align-items: end;
     color: #ddd;
     padding: 8px 16px;
     text-decoration: none;
     text-align: right;
+      direction: rtl;
   }
 
   /* Change the link color on hover */
   li a:hover {
-    background-color: #ddd;
+    background-color: #ff00f7;
     color: black;
   }
 .main-text, .secondary-text {
@@ -120,7 +121,7 @@ ul {
       display: block; /* Ensure main text is on its own line */
       font-weight: bold; /* Main text font weight */
   }
-  .secondary-text::after {
+  .secondary-text::before {
       content: "|";
       left: 10px;
       margin: 10px;

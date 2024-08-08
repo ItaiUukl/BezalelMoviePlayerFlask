@@ -1,34 +1,64 @@
+import struct
+
+import numpy as np
 from flask import Flask
 from flask import render_template, send_from_directory, jsonify
 
-import os
+from os import path, listdir
 import sys
 import pandas
+import json
 
 application_path = ''
 
 # determine if application is a script file or frozen exe
 if getattr(sys, 'frozen', False):
-    application_path = os.path.join(os.path.dirname(sys.executable), '_internal')
+    application_path = path.join(path.dirname(sys.executable), '_internal')
 elif __file__:
-    application_path = os.path.dirname(__file__)
+    application_path = path.dirname(__file__)
 
 app = Flask(__name__, static_url_path='/static')
 
-DATA_PATH = os.path.join(application_path, 'static', 'data')
-MOVIES_DIR = os.path.join('static', 'data', 'movies')
-IMAGES_DIR = os.path.join('static', 'data', 'images')
-CSV_DIR = os.path.join(DATA_PATH, 'csv')
+DATA_PATH = path.join(application_path, 'static', 'data')
+MOVIES_DIR = path.join('static', 'data', 'movies')
+IMAGES_DIR = path.join('static', 'data', 'images')
+CSV_DIR = path.join(DATA_PATH, 'csv')
 
 
 def get_vod_setup():
-    setup_csv = pandas.read_csv(os.path.join(CSV_DIR, 'BezalelVODSettings.csv'))
+    excel_files = listdir(CSV_DIR)
+    csv_files = [f for f in excel_files if f.endswith(".csv")]
+    xls_files = [f for f in excel_files if f.endswith((".xls", ".xlsx", ".xlsm", ".xlt"))]
+    if csv_files:
+        setup_csv = pandas.read_csv(path.join(CSV_DIR, csv_files[0]))
+    elif xls_files:
+        setup_csv = pandas.read_excel(path.join(CSV_DIR, xls_files[0]))
+    else:
+        raise Exception("No csv or xls files found")
+
+    with open(path.join(DATA_PATH, 'csv_setup.json')) as f:
+        name_converter = json.load(f)
+
     setup_dct = {}
     for i in range(len(setup_csv)):
-        movie_name = setup_csv.iloc[i]["movieName"]
-        setup_dct[movie_name] = setup_csv.drop("movieName", axis=1).iloc[i].to_dict()
-        setup_dct[movie_name]["url"] = os.path.join(MOVIES_DIR, setup_csv.iloc[i]["movieFile"])
-        setup_dct[movie_name]["img_url"] = os.path.join(IMAGES_DIR, setup_csv.iloc[i]["imageFile"])
+        movie_file_name = setup_csv.iloc[i][name_converter["movieFile"]]
+        if (not movie_file_name or type(movie_file_name) is not str or
+                not path.isfile(path.join(MOVIES_DIR, movie_file_name))):
+            continue
+
+        movie_file_name = str.strip(movie_file_name)
+
+        if movie_file_name not in setup_dct:
+            setup_dct[movie_file_name] = {}
+
+        for key, val in name_converter.items():
+            if key == "movieOrder":
+                setup_dct[movie_file_name][key] = int(setup_csv.iloc[i][val])
+            else:
+                setup_dct[movie_file_name][key] = str.strip(setup_csv.iloc[i][val])
+
+        setup_dct[movie_file_name]["movieURL"] = path.join(MOVIES_DIR, movie_file_name)
+        setup_dct[movie_file_name]["imageURL"] = path.join(IMAGES_DIR, setup_dct[movie_file_name]["imageFile"])
 
     return setup_dct
 

@@ -7,16 +7,16 @@ let currMovieIndex = 0;
 const fetchMovies = async () => {
     const res = await fetch('/movies')
     moviesDict = await res.json()
-    moviesNamesList = Object.keys(moviesDict);
+    moviesNamesList = Object.keys(moviesDict).sort((a, b) => moviesDict[a]["movieOrder"] - moviesDict[b]["movieOrder"]);
 };
 
 
-const playMovie = function (name) {
+const playMovie = function (fileName) {
     const videoNode = document.getElementById('moviePlayer');
     enterFullScreen();
-    if (name !== playedMovie) {
-        videoNode.src = moviesDict[name]["url"];
-        playedMovie = name;
+    if (fileName !== playedMovie) {
+        videoNode.src = moviesDict[fileName]["movieURL"];
+        playedMovie = fileName;
     }
     videoNode.pause();
     videoNode.currentTime = 0;
@@ -43,27 +43,15 @@ const enterFullScreen = () => {
         document.documentElement.msRequestFullscreen();
     }
 }
+
 const playNextMovie = () => {
     currMovieIndex = (currMovieIndex + 1) % moviesNamesList.length;
     playMovie(moviesNamesList[currMovieIndex])
 }
 
-document.documentElement.addEventListener('loadeddata', (event) => {
-    if (moviesNamesList.length > 0) {
-        playMovie(moviesNamesList[0]);
-    }
-})
-
-document.documentElement.addEventListener('mousemove', (event) => {
-    if (document.fullscreenElement !== document.documentElement || document.webkitFullscreenElement !== document.documentElement){
-        enterFullScreen()
-    }
-})
-
-
 document.addEventListener('DOMContentLoaded', () => {
     const myList = document.getElementById('lista');
-    const listItems = myList.querySelectorAll('li');
+    const menuContainer = document.getElementById('menuContainer');
 
     const videoNode = document.getElementById('moviePlayer')
     const imageNode = document.getElementById('movieImage')
@@ -71,13 +59,13 @@ document.addEventListener('DOMContentLoaded', () => {
     videoNode.addEventListener("click", event => event.preventDefault())
 
     const showMenu = function () { // function to show/hide menu
-        if (myList.style.display === 'none' || myList.style.display === '') {
-            myList.style.display = 'block';
+        if (menuContainer.style.display === 'none' || menuContainer.style.display === '') {
+            menuContainer.style.display = 'flex';
             videoNode.pause()
 
           document.body.classList.remove("noCursor");
         } else {
-            myList.style.display = 'none';
+            menuContainer.style.display = 'none';
             imageNode.style.display = 'none';
             videoNode.style.display = 'block'
 
@@ -88,47 +76,49 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.addEventListener('click', showMenu);
     document.body.addEventListener('contextmenu', showMenu);
 
-    myList.addEventListener('mouseover', (event) => {
-        if (event.target.tagName === 'LI' || event.target.closest('li')) {
-            const li = event.target.tagName === 'LI' ? event.target : event.target.closest('li');
-            imageNode.style.display = 'block';
-            videoNode.style.display = 'none';
-            imageNode.src = moviesDict[li.querySelector('.main-text').textContent]["img_url"];
-        }
-    });
-
-    myList.addEventListener('mouseleave', (event) => {
+    menuContainer.addEventListener('mouseover', () =>{
+        imageNode.style.display = 'block';
+        videoNode.style.display = 'none';
+        let movieName = playedMovie ? playedMovie : moviesNamesList[0];
+        imageNode.src = moviesDict[movieName]["imageURL"];
+    })
+    menuContainer.addEventListener('mouseleave', (event) => {
         imageNode.style.display = 'none';
         videoNode.style.display = 'block';
     });
-    myList.addEventListener('click', (event) => {
+    menuContainer.addEventListener('click', (event) => {
         event.stopPropagation();
     });
 
-    myList.addEventListener('contextmenu', event => event.preventDefault());
-    myList.addEventListener("contextmenu", (event) => {
+    menuContainer.addEventListener('contextmenu', event => event.preventDefault());
+    menuContainer.addEventListener("contextmenu", (event) => {
         event.stopPropagation();
     });
 
     const playMovieOnClick = function (movieName) {
-        myList.style.display = 'none';
+        menuContainer.style.display = 'none';
         imageNode.style.display = 'none';
         videoNode.style.display = 'block'
           document.body.classList.add("noCursor");
         playMovie(movieName);
     }
-    const handleItemClick = (li, type, mainText) => {
+
+    const handleItemClick = (li, type, movieFile) => {
         li.addEventListener(type, () => {
-            playMovieOnClick(mainText);
+            playMovieOnClick(movieFile);
         })
     }
 
-    listItems.forEach(item => {
-        item.addEventListener('click', playMovieOnClick)
-        item.addEventListener('contextmenu', playMovieOnClick)
-    });
+    const handleItemHover = (li, movieFileName) => {
+        li.addEventListener('mouseover', (event) => {
+            imageNode.style.display = 'block';
+            videoNode.style.display = 'none';
+            imageNode.src = moviesDict[movieFileName]["imageURL"];
+            event.stopPropagation();
+        })
+    }
 
-    function addListItem(mainText, secondaryText) {
+    function addListItem(movieFileName) {
         const li = document.createElement('li');
         const a = document.createElement('a');
         const mainSpan = document.createElement('span');
@@ -137,22 +127,23 @@ document.addEventListener('DOMContentLoaded', () => {
         mainSpan.classList.add('main-text');
         secondarySpan.classList.add('secondary-text');
 
-        mainSpan.textContent = mainText;
-        secondarySpan.textContent = secondaryText;
+        mainSpan.textContent = moviesDict[movieFileName]["authorName"];
+        secondarySpan.textContent = moviesDict[movieFileName]["movieName"];
 
         a.appendChild(mainSpan);
         a.appendChild(secondarySpan);
         li.appendChild(a);
 
-        handleItemClick(li, 'click', mainText)
-        handleItemClick(li, 'contextmenu', mainText)
+        handleItemClick(li, 'click', movieFileName)
+        handleItemClick(li, 'contextmenu', movieFileName)
+        handleItemHover(li, movieFileName)
 
         myList.appendChild(li);
     }
 
     fetchMovies().then(() => {
-        for (let name in moviesDict) {
-            addListItem(name, moviesDict[name]["creators"])
+        for (let i = 0; i < moviesNamesList.length; i++) {
+            addListItem(moviesNamesList[i]);
         }
     })
 });
