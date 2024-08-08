@@ -79,8 +79,10 @@ document.addEventListener('DOMContentLoaded', () => {
     menuContainer.addEventListener('mouseover', () =>{
         imageNode.style.display = 'block';
         videoNode.style.display = 'none';
-        let movieName = playedMovie ? playedMovie : moviesNamesList[0];
-        imageNode.src = moviesDict[movieName]["imageURL"];
+        if (moviesNamesList.length !== 0) {
+            let movieName = playedMovie ? playedMovie : moviesNamesList[0];
+            imageNode.src = moviesDict[movieName]["imageURL"];
+        }
     })
     menuContainer.addEventListener('mouseleave', (event) => {
         imageNode.style.display = 'none';

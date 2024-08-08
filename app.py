@@ -1,6 +1,3 @@
-import struct
-
-import numpy as np
 from flask import Flask
 from flask import render_template, send_from_directory, jsonify
 
@@ -8,6 +5,7 @@ from os import path, listdir
 import sys
 import pandas
 import json
+import chardet
 
 application_path = ''
 
@@ -30,7 +28,9 @@ def get_vod_setup():
     csv_files = [f for f in excel_files if f.endswith(".csv")]
     xls_files = [f for f in excel_files if f.endswith((".xls", ".xlsx", ".xlsm", ".xlt"))]
     if csv_files:
-        setup_csv = pandas.read_csv(path.join(CSV_DIR, csv_files[0]))
+        with open(path.join(CSV_DIR, csv_files[0]), 'rb') as f:
+            encoding = chardet.detect(f.read())['encoding']
+        setup_csv = pandas.read_csv(path.join(CSV_DIR, csv_files[0]), encoding=encoding)
     elif xls_files:
         setup_csv = pandas.read_excel(path.join(CSV_DIR, xls_files[0]))
     else:
@@ -39,11 +39,19 @@ def get_vod_setup():
     with open(path.join(DATA_PATH, 'csv_setup.json')) as f:
         name_converter = json.load(f)
 
+    if setup_csv.empty:
+        raise Exception("csv or xls files is empty")
+
+    if not name_converter:
+        raise Exception("No json file found")
+
     setup_dct = {}
     for i in range(len(setup_csv)):
         movie_file_name = setup_csv.iloc[i][name_converter["movieFile"]]
         if (not movie_file_name or type(movie_file_name) is not str or
-                not path.isfile(path.join(MOVIES_DIR, movie_file_name))):
+                not path.exists(path.join(DATA_PATH, 'movies', movie_file_name))):
+            if type(movie_file_name) is str:
+                print(path.join(MOVIES_DIR, movie_file_name))
             continue
 
         movie_file_name = str.strip(movie_file_name)
