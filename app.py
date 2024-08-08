@@ -1,14 +1,26 @@
-import pandas
-import os
-
 from flask import Flask
 from flask import render_template, send_from_directory, jsonify
+import webbrowser
+import threading
 
-app = Flask(__name__)
+import os
+import sys
+import pandas
 
-MOVIES_DIR = 'static/data/movies'
-IMAGES_DIR = 'static/data/images'
-CSV_DIR = 'static/data/csv'
+application_path = ''
+
+# determine if application is a script file or frozen exe
+if getattr(sys, 'frozen', False):
+    application_path = os.path.join(os.path.dirname(sys.executable), '_internal')
+elif __file__:
+    application_path = os.path.dirname(__file__)
+
+app = Flask(__name__, static_url_path='/static')
+
+DATA_PATH = os.path.join(application_path, 'static', 'data')
+MOVIES_DIR = os.path.join('static', 'data', 'movies')
+IMAGES_DIR = os.path.join('static', 'data', 'images')
+CSV_DIR = os.path.join(DATA_PATH, 'csv')
 
 
 def get_vod_setup():
@@ -38,5 +50,12 @@ def list_movies():
     return jsonify(get_vod_setup())
 
 
+def run_server():
+    app.run(port=5000)
+
+
 if __name__ == '__main__':
-    app.run()
+    # Run Flask server in a separate thread
+    server_thread = threading.Thread(target=run_server)
+    server_thread.start()
+    webbrowser.open_new('http://127.0.0.1:5000')
