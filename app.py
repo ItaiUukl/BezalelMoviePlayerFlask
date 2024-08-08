@@ -1,7 +1,5 @@
 from flask import Flask
 from flask import render_template, send_from_directory, jsonify
-import webbrowser
-import threading
 
 import os
 import sys
@@ -50,12 +48,5 @@ def list_movies():
     return jsonify(get_vod_setup())
 
 
-def run_server():
-    app.run(port=5000)
-
-
 if __name__ == '__main__':
-    # Run Flask server in a separate thread
-    server_thread = threading.Thread(target=run_server)
-    server_thread.start()
-    webbrowser.open_new('http://127.0.0.1:5000')
+    app.run()
