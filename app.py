@@ -23,7 +23,11 @@ IMAGES_DIR = path.join('static', 'data', 'images')
 CSV_DIR = path.join(DATA_PATH, 'csv')
 
 
-def get_vod_setup():
+def get_setup_csv():
+    """
+    Loads and parses the csv/excel file and creates a setup file from it.
+    :return: The parsed setup file as pandas csv.
+    """
     excel_files = listdir(CSV_DIR)
     csv_files = [f for f in excel_files if f.endswith(".csv")]
     xls_files = [f for f in excel_files if f.endswith((".xls", ".xlsx", ".xlsm", ".xlt"))]
@@ -35,19 +39,28 @@ def get_vod_setup():
         setup_csv = pandas.read_excel(path.join(CSV_DIR, xls_files[0]))
     else:
         raise Exception("No csv or xls files found")
+    return setup_csv
+
+
+def get_vod_setup():
+    """
+    Generates movie files data from csv file on the server.
+    :return:
+    """
+    setup_csv = get_setup_csv()
 
     with open(path.join(DATA_PATH, 'csv_setup.json')) as f:
-        name_converter = json.load(f)
+        headline_converter = json.load(f)
 
     if setup_csv.empty:
         raise Exception("csv or xls files is empty")
 
-    if not name_converter:
+    if not headline_converter:
         raise Exception("No json file found")
 
     setup_dct = {}
     for i in range(len(setup_csv)):
-        movie_file_name = setup_csv.iloc[i][name_converter["movieFile"]]
+        movie_file_name = setup_csv.iloc[i][headline_converter["movieFile"]]
         if (not movie_file_name or type(movie_file_name) is not str or
                 not path.exists(path.join(DATA_PATH, 'movies', movie_file_name))):
             continue
@@ -57,9 +70,9 @@ def get_vod_setup():
         if movie_file_name not in setup_dct:
             setup_dct[movie_file_name] = {}
 
-        for key, val in name_converter.items():
+        for key, val in headline_converter.items():
             if key == "movieOrder":
-                setup_dct[movie_file_name][key] = int(setup_csv.iloc[i][val])
+                setup_dct[movie_file_name][key] = str(setup_csv.iloc[i][val])
             else:
                 setup_dct[movie_file_name][key] = str.strip(setup_csv.iloc[i][val])
 
@@ -74,13 +87,12 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/movie/<filename>')
-def get_movie(filename):
-    return send_from_directory(MOVIES_DIR, filename)
-
-
 @app.route('/movies')
 def list_movies():
+    """
+    Returns a json object with the movies data.
+    :return: Movies data as json object
+    """
     return jsonify(get_vod_setup())
 
 
