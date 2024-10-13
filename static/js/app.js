@@ -11,7 +11,7 @@ const fetchMovies = async () => {
 };
 
 
-const playMovie = function (fileName) {
+const playMovie = (fileName) => {
     const videoNode = document.getElementById('moviePlayer');
     enterFullScreen();
     if (fileName !== playedMovie) {
@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     videoNode.addEventListener("click", event => event.preventDefault())
 
-    const showMenu = function () { // function to show/hide menu
+    const showMenu = () => { // function to show/hide menu
         if (menuContainer.style.display === 'none' || menuContainer.style.display === '') {
             menuContainer.style.display = 'flex';
             videoNode.pause()
@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
         event.stopPropagation();
     });
 
-    const playMovieOnClick = function (movieName) {
+    const playMovieOnClick = (movieName) => {
         menuContainer.style.display = 'none';
         imageNode.style.display = 'none';
         videoNode.style.display = 'block'
@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
         })
     }
 
-    function addListItem(movieFileName) {
+    const addListItem = (movieFileName) => {
         const li = document.createElement('li');
         const a = document.createElement('a');
         const mainSpan = document.createElement('span');
