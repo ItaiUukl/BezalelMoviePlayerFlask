@@ -50,8 +50,6 @@ def get_vod_setup():
         movie_file_name = setup_csv.iloc[i][name_converter["movieFile"]]
         if (not movie_file_name or type(movie_file_name) is not str or
                 not path.exists(path.join(DATA_PATH, 'movies', movie_file_name))):
-            if type(movie_file_name) is str:
-                print(path.join(MOVIES_DIR, movie_file_name))
             continue
 
         movie_file_name = str.strip(movie_file_name)
