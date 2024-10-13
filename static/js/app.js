@@ -26,9 +26,9 @@ const playMovie = (fileName) => {
 
 document.addEventListener('contextmenu', event => event.preventDefault());
 
-document.addEventListener('mousedown', (e) => {
-    if(e.button === 1){
-        e.preventDefault();
+document.addEventListener('mousedown', (event) => {
+    if(event.button === 1){
+        event.preventDefault();
     }
 });
 
@@ -50,7 +50,7 @@ const playNextMovie = () => {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const myList = document.getElementById('lista');
+    const moviesList = document.getElementById('moviesList');
     const menuContainer = document.getElementById('menuContainer');
 
     const videoNode = document.getElementById('moviePlayer')
@@ -105,8 +105,8 @@ document.addEventListener('DOMContentLoaded', () => {
         playMovie(movieName);
     }
 
-    const handleItemClick = (li, type, movieFile) => {
-        li.addEventListener(type, () => {
+    const handleItemClick = (liTag, eventType, movieFile) => {
+        liTag.addEventListener(eventType, () => {
             playMovieOnClick(movieFile);
         })
     }
@@ -121,8 +121,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const addListItem = (movieFileName) => {
-        const li = document.createElement('li');
-        const a = document.createElement('a');
+        const liTag = document.createElement('li');
+        const aTag = document.createElement('a');
         const mainSpan = document.createElement('span');
         const secondarySpan = document.createElement('span');
 
@@ -132,15 +132,15 @@ document.addEventListener('DOMContentLoaded', () => {
         mainSpan.textContent = moviesDict[movieFileName]["authorName"];
         secondarySpan.textContent = moviesDict[movieFileName]["movieName"];
 
-        a.appendChild(mainSpan);
-        a.appendChild(secondarySpan);
-        li.appendChild(a);
+        aTag.appendChild(mainSpan);
+        aTag.appendChild(secondarySpan);
+        liTag.appendChild(aTag);
 
-        handleItemClick(li, 'click', movieFileName)
-        handleItemClick(li, 'contextmenu', movieFileName)
-        handleItemHover(li, movieFileName)
+        handleItemClick(liTag, 'click', movieFileName)
+        handleItemClick(liTag, 'contextmenu', movieFileName)
+        handleItemHover(liTag, movieFileName)
 
-        myList.appendChild(li);
+        moviesList.appendChild(liTag);
     }
 
     fetchMovies().then(() => {
