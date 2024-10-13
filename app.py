@@ -59,7 +59,7 @@ def get_vod_setup():
 
         for key, val in name_converter.items():
             if key == "movieOrder":
-                setup_dct[movie_file_name][key] = int(setup_csv.iloc[i][val])
+                setup_dct[movie_file_name][key] = str(setup_csv.iloc[i][val])
             else:
                 setup_dct[movie_file_name][key] = str.strip(setup_csv.iloc[i][val])
 
