@@ -24,6 +24,10 @@ CSV_DIR = path.join(DATA_PATH, 'csv')
 
 
 def get_setup_csv():
+    """
+    Loads and parses the csv/excel file and creates a setup file from it.
+    :return: The parsed setup file as pandas csv.
+    """
     excel_files = listdir(CSV_DIR)
     csv_files = [f for f in excel_files if f.endswith(".csv")]
     xls_files = [f for f in excel_files if f.endswith((".xls", ".xlsx", ".xlsm", ".xlt"))]
@@ -39,6 +43,10 @@ def get_setup_csv():
 
 
 def get_vod_setup():
+    """
+    Generates movie files data from csv file on the server.
+    :return:
+    """
     setup_csv = get_setup_csv()
 
     with open(path.join(DATA_PATH, 'csv_setup.json')) as f:
@@ -79,13 +87,12 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/movie/<filename>')
-def get_movie(filename):
-    return send_from_directory(MOVIES_DIR, filename)
-
-
 @app.route('/movies')
 def list_movies():
+    """
+    Returns a json object with the movies data.
+    :return: Movies data as json object
+    """
     return jsonify(get_vod_setup())
 
 
