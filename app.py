@@ -74,7 +74,9 @@ def get_vod_setup():
             if key == "movieOrder":
                 setup_dct[movie_file_name][key] = str(setup_csv.iloc[i][val])
             else:
-                setup_dct[movie_file_name][key] = str.strip(setup_csv.iloc[i][val])
+                setup_dct[movie_file_name][key] = str.strip(str(setup_csv.iloc[i][val]))
+                if setup_dct[movie_file_name][key]=='nan':
+                    setup_dct[movie_file_name][key]=' '
 
         setup_dct[movie_file_name]["movieURL"] = path.join(MOVIES_DIR, movie_file_name)
         setup_dct[movie_file_name]["imageURL"] = path.join(IMAGES_DIR, setup_dct[movie_file_name]["imageFile"])

@@ -1,35 +1,84 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title></title>
+    <link rel="stylesheet" href="../static/css/style.css" />
+    <meta name="description" content="" />
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title></title>
-  <link rel="stylesheet" href="../static/css/style.css">
-  <meta name="description" content="">
+    <meta property="og:title" content="" />
+    <meta property="og:type" content="" />
+    <meta property="og:url" content="" />
+    <meta property="og:image" content="" />
+    <meta property="og:image:alt" content="" />
+  </head>
 
-  <meta property="og:title" content="">
-  <meta property="og:type" content="">
-  <meta property="og:url" content="">
-  <meta property="og:image" content="">
-  <meta property="og:image:alt" content="">
-</head>
+  <body>
+    <div class="image-container"></div>
 
-<body>
-
-<div class="image-container">
-    <img id="movieImage" alt="" src=""></img>
-</div>
-
-<div class="video-container">
-    <video id="moviePlayer" autoplay></video>
-</div>
-<div class="menu-container" id="menuContainer">
-<ul id="moviesList">
-</ul>
-</div>
-<script src="../static/js/app.js"></script>
-
-</body>
-
+    <div class="video-container">
+      <video id="moviePlayer" autoplay></video>
+    </div>
+    <div class="pause-container" id="pauseContainer">
+      <div class="buffer"></div>
+      <div class="content-wrapper">
+        <div class="details-logo" id="detailsLogo">
+          <img
+            src="static/media/SBA_festival2025_logo_FIXED.png"
+            class="top-right-icon"
+          />
+          <div class="room-num-headline-div">
+            <h1 class="room-num-headline" id="roomNumHeadline">אולם 5</h1>
+          </div>
+          <div class="filler" id="filler"></div>
+        </div>
+        <div class="details-container" id="detailsContainer">
+          <div class="details-buttons" id="detailsButtons">
+            <h2 class="buttons-headline" id="nowPlaying">מתנגן כעת</h2>
+            <div class="buttons-group">
+              <button class="replay-button" id="replayButton">
+                <img src="static/media/replay_button.png" class="replay-img" />
+              </button>
+            </div>
+          </div>
+          <div class="details-body" id="detailsBody">
+            <div class="body-filler-right"></div>
+            <div class="body-img" id="bodyPic">
+              <img id="bodyImgPic" class="body-img-pic" />
+              <button class="play-button" id="playButton">
+                <img src="static/media/play_button.png" class="play-img" />
+              </button>
+            </div>
+            <div class="body-text" id="bodyText">
+              <h1 class="movie-name" id="movieName"></h1>
+              <h2 class="authors-names" id="authors"></h2>
+              <h3 class="mov-length" id="movLength"></h3>
+              <div class="mov-desc-wrapper">
+                <h3 class="mov-desc" id="movDesc"></h3>
+              </div>
+            </div>
+          </div>
+          <div class="details-restrictions" id="detailsRestrictions">
+            <div class="triggers-buffer-right"></div>
+            <div class="triggers-wrapper">
+              <h2 class="triggers" id="triggers"></h2>
+            </div>
+          </div>
+        </div>
+        <div class="menu-container" id="menuContainer">
+          <button class="scroll-btn left">
+            <img src="static/media/left_button.png" class="scroll-btn-img" />
+          </button>
+          <div class="menu-scroll">
+            <ul id="moviesList"></ul>
+          </div>
+          <button class="scroll-btn right">
+            <img src="static/media/right_button.png" class="scroll-btn-img" />
+          </button>
+        </div>
+      </div>
+    </div>
+    <script src="../static/js/app.js"></script>
+  </body>
 </html>

@@ -1,20 +1,37 @@
 @font-face {
-    font-family: 'abraham';
-    src: url('fonts/Abraham/Abraham-Regular.otf') format('opentype');
-    font-weight: normal;
-    font-style: normal;
+  font-family: 'abraham';
+  src: url('fonts/Abraham/Abraham-Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
 }
 @font-face {
-    font-family: 'abraham';
-    src: url('fonts/Abraham/Abraham-Bold.otf') format('opentype');
-    font-weight: bold;
-    font-style: normal;
+  font-family: 'abraham';
+  src: url('fonts/Abraham/Abraham-Bold.otf') format('opentype');
+  font-weight: bold;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'michal';
+  src: url('fonts/Reisinger-Michal/Reisinger-Michal-Regular.otf')
+    format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'michal';
+  src: url('fonts/Reisinger-Michal/Reisinger-Michal-Bold.otf')
+    format('opentype');
+  font-weight: bold;
+  font-style: bold;
 }
 html {
   height: 100%;
-    margin: 0;
+  margin: 0;
 }
 
+/* * {
+  border: 2px solid red;
+} */
 
 body.noCursor {
   cursor: none;
@@ -22,109 +39,478 @@ body.noCursor {
 
 body {
   height: 100%;
-    margin: 0;
-    overflow: hidden;
-    font-family: 'abraham', sans-serif;
-    background-color: black;
-    user-select: none;
-    display: flex;
-    justify-content: flex-end;
-}
-video {
-    position: absolute;
-    z-index: -1;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  margin: 0;
+  overflow-x: auto;
+  font-family: 'abraham', sans-serif;
+  background-color: black;
+  user-select: none;
+  display: flex;
+  justify-content: flex-end;
 }
 
-img {
-    position: absolute;
-    z-index: -1;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.body-text {
+  flex-grow: 1;
+  overflow: hidden;
+  padding-right: 5vw;
+  max-width: 100%; /* prevent overflow */
+  box-sizing: border-box;
+  word-wrap: break-word;
+  text-align: right;
+}
+
+video {
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* img {
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+} */
+
+.pause-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* fill screen height */
+  z-index: 20;
+  top: 0;
+  right: 0;
+  position: absolute;
+}
+
+.image-container {
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #231f20;
+  opacity: 0.8;
+  transition: opacity 0.5s ease;
+  pointer-events: none; /* allows clicks to pass through */
+}
+.image-container.hidden {
+  opacity: 0;
 }
 
 video::-webkit-media-controls {
-    display:none !important;
+  display: none !important;
 }
 
 input {
-    width: 100%;
+  width: 100%;
 }
 
 .info {
-    background-color: aqua;
+  background-color: aqua;
 }
 
 .error {
-    background-color: red;
-    color: white;
+  background-color: red;
+  color: white;
 }
 
 .menu-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center; /* Center content vertically */
-    height: 100%;
-    width: 50%;
-    overflow: hidden;
-    background-color: rgba(0,0,0, 0.5);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 80vw;
+  /* height: 201px; */
+  left: 50%; /* Start from center */
+  transform: translateX(-50%); /* Center horizontally */
+  height: 30vh;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 10px;
+  box-sizing: border-box;
+  overflow: hidden;
+  z-index: 10;
+  /* margin-top: 10%; */
+  flex-shrink: 0;
+  margin-bottom: 5vh;
+}
+
+.menu-scroll {
+  display: flex;
+  scroll-behavior: smooth;
+  white-space: nowrap;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  z-index: 10;
+  flex: 1;
+  height: auto;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 10%,
+    black 90%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 10%,
+    black 90%,
+    transparent
+  );
 }
 
 ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    max-height: 100vh;
-    right: 0;  /*Align to the right side of the page */
-    top: 0;
-    overflow: auto; /* Enable scrolling if the sidenav has too much content */
-    text-align: right;
-  }
+  display: flex;
+  flex-direction: row;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: auto;
+  gap: 10px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+  scrollbar-width: none;
+}
 
 ::-webkit-scrollbar {
-    width: 0px;
-    background: transparent; /* make scrollbar transparent */
+  width: 0px;
+  background: transparent;
 }
 
-  li a {
-    display: flex;
-      flex-direction: row;
-      align-items: end;
-    color: #ddd;
-    padding: 8px 16px;
-    text-decoration: none;
-    text-align: right;
-      direction: rtl;
-  }
-
-  /* Change the link color on hover */
-  li a:hover {
-    background-color: #ff00f7;
-    color: black;
-  }
-.main-text, .secondary-text {
-    display: inline-block; /* Display elements inline-block */
-    font-size: 25px;
+.scroll-btn {
+  width: 100px; /* or whatever fixed width you want */
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0);
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  z-index: 100;
+  flex-shrink: 0; /* do not shrink */
 }
-  .main-text {
-      display: block; /* Ensure main text is on its own line */
-      font-weight: bold; /* Main text font weight */
-  }
-  /* Adds '|' between main text (author name) and secondary text (movie name) */
-  .secondary-text::before {
-      content: "|";
-      left: 10px;
-      margin: 10px;
-  }
 
-  .secondary-text {
-      display: block; /* Ensure secondary text is on its own line */
-  }
+.scroll-btn.left {
+  left: 0;
+}
+
+.scroll-btn.right {
+  right: 0;
+}
+
+.scroll-btn-img {
+  width: 27px;
+  height: 60px;
+}
+
+li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-left: 10px;
+  flex: 0 0 auto;
+}
+
+li img {
+  position: static;
+  z-index: auto;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: transform 0.3s, border-color 0.3s;
+  width: 300px; /* or any width you want */
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover; /* optional: crop to fit exactly */
+  cursor: pointer;
+}
+
+li img:hover {
+  transform: scale(1.05);
+  /* border-color: #4474be; */
+}
+
+.secondary-text {
+  display: block; /* Ensure secondary text is on its own line */
+}
+
+.pause-top {
+  display: flex;
+  flex-direction: row-reverse; /* Logo on the right */
+  align-items: flex-start;
+  width: 100%;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.details-logo {
+  display: flex;
+  flex-direction: row-reverse; /* right to left */
+  align-items: center; /* vertical center alignment */
+  gap: 1rem; /* space between logo and headline */
+  /* padding: 1rem;  */
+  z-index: 20;
+  box-sizing: border-box;
+  height: 5vh;
+  flex-shrink: 0;
+}
+
+.details-logo img.top-right-icon {
+  width: 30vh; /* set desired logo width */
+  height: auto;
+  flex-shrink: 0; /* prevent shrinking */
+  position: static;
+  padding-right: 3vw;
+}
+
+.room-num-headline-div {
+  flex-direction: row-reverse;
+  padding-right: 4vw;
+  padding-top: 2vh;
+}
+
+.room-num-headline {
+  flex-grow: 1; /* fill remaining space */
+  color:  #f0e7d6;
+  margin: 0; /* reset default margins */
+  /* padding-top: 2rem; */
+  /* border: 5px solid red; */
+  font-family: 'michal';
+  font-weight: bold;
+  font-size: 60px;
+}
+
+.filler {
+  flex-grow: 1;
+}
+
+.pause-content-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* The remaining space */
+.details-container {
+  flex: 1; /* Take remaining width */
+  flex-grow: 1;
+  flex-shrink: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding-right: 2vw;
+  padding-top: 5vh;
+  height: 60vh;
+}
+
+.details-buttons {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  gap: 10rem;
+  align-items: center;
+  margin: 0 auto; /* This centers horizontally */
+  width: fit-content; /* shrink-wrap to content */
+  margin-right: 15vw;
+  padding-top: 3vh;
+}
+
+.buttons-headline {
+  margin: 0;
+  color: #f0e7d6;
+  /* Align text right */
+  text-align: right;
+  flex-shrink: 0; /* prevent shrinking */
+  font-family: 'michal';
+  font-weight: normal; /* select bold weight */
+  font-size: 45px;
+}
+
+.buttons-group {
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 3vw; /* space between buttons */
+  background: none;padding-right: 14vw;
+}
+
+.replay-button {
+  width: 40px; /* try changing this */
+  height: 40px;
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+
+.replay-button img {
+  width: 100%; /* make the image scale to fit */
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.hidden-button {
+  display: none;
+}
+
+.details-body {
+  display: flex;
+  flex-direction: row-reverse; /* Right to left */
+  flex-grow: 1;
+  overflow-y: auto;
+  width: 100vw; /* Or desired width */
+  height: 40vh; /* Optional, if you want full height */
+  max-width: 100vw;
+  max-height: 100vh;
+  box-sizing: border-box;
+}
+
+.body-filler-right {
+  width: 15vw;
+  flex-shrink: 0;
+}
+
+.body-img {
+  position: relative;
+  display: inline-block; /* Or block, depending on layout */
+}
+
+.body-img-pic {
+  width: 700px; /* set desired logo width */
+  height: auto;
+  aspect-ratio: 16 / 9;
+  flex-shrink: 0; /* prevent shrinking */
+  position: static;
+  flex-shrink: 0;
+  display: block;
+}
+
+.play-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: none;
+  /* background: transparent; */
+  border-radius: 50%;      /* Makes it a circle */
+  background-color:  #231f20;
+  opacity: 80%;
+  padding: 0;
+  cursor: pointer;
+  z-index: 2; /* Make sure it’s on top */
+  cursor: pointer;
+  width: 70px;
+  height: 70px;
+  margin-bottom: 200px;
+}
+
+.play-button img {
+  width: 60%;
+  height: 60%;
+}
+
+.body-text {
+  flex-grow: 1;
+  flex: 1;
+  /* width: 100%; */
+  overflow: hidden;
+  padding-right: 5vw;
+}
+
+.body-text h1,
+.body-text h2,
+.body-text h3 {
+  color: #f0e7d6; /* Or any color you prefer */
+  margin: 0;
+  /* padding: 0.2em 0; */
+  max-width: 100%; /* prevent expanding container */
+}
+
+.body-text h1 {
+  font-size: 55px;
+  font-family: 'michal';
+  font-weight: bold;
+  max-width: 100%; /* prevent expanding container */
+}
+
+.body-text h2 {
+  font-size: 35px;
+  font-family: 'abraham';
+  max-width: 100%; /* prevent expanding container */
+}
+
+.body-text h3 {
+  font-size: 30px;
+  font-family: 'abraham';
+  white-space: normal; /* allows wrapping */
+  word-break: break-word; /* break words if needed */
+  overflow-wrap: break-word; /* ensure long words wrap */
+  box-sizing: border-box;
+  max-width: 100%; /* prevent expanding container */
+  max-height: 100%; /* prevent expanding container */
+}
+
+.mov-desc-wrapper {
+  max-width: 30vw;       /* or any fixed size you want */
+  text-overflow: ellipsis;
+  white-space: normal;   /* allow wrapping */
+  word-break: break-word;
+  overflow: hidden;
+  box-sizing: border-box;
+  direction: rtl;             /* ensures right-to-left layout */
+  text-align: right;          /* align the text to the right */
+  margin-left: auto;
+}
+
+.buffer {
+  height: 5vh;
+}
+
+.details-restrictions {
+  width: 100%;
+  height: 10vh;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: flex-start;
+}
+.triggers-wrapper {
+  flex: 1; /* take remaining space */
+  height: 100%;
+  display: flex;
+  align-items: flex-start;
+  flex-direction: row-reverse;
+}
+
+.triggers {
+  font-size: 45px;
+  font-family: 'abraham';
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  color: #f0e7d6;
+  margin-top: -2vh; 
+}
+.triggers-buffer-right {
+  width: 57vw;
+  flex-shrink: 0;
+}
