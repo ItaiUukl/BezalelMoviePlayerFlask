@@ -32,7 +32,8 @@ const TRIGGERS_DICT_CONST = 'triggers';
 const DESCRIPTION_DICT_CONST = 'description';
 const LENGTH_DICT_CONST = 'length';
 const NOW_PLAYING = 'עכשיו מתנגן';
-const ROOM_DICT_CONST = 'room'
+const ROOM_DICT_CONST = 'room';
+const VOL_STEP = 0.05;
 
 /**
  * Fetches all movies urls from the (local) server and updates the inner data accordingly.
@@ -97,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const roomHeadline = document.getElementById('roomNumHeadline');
   const menuBackground = document.querySelector('.image-container');
   //   const playButton = document.getElementById('playButton');
-    const replayButton = document.getElementById('replayButton');
+  const replayButton = document.getElementById('replayButton');
 
   /**
    * Plays the given movie from the beginning.
@@ -135,22 +136,22 @@ document.addEventListener('DOMContentLoaded', () => {
     playMovie(movieFile);
   };
 
-    replayButton.addEventListener('click', function () {
-      // playMovieOnClick(hoveredMovie);
-      currentMovieIndex = moviesDict[hoveredMovie][MOVIE_ORDER_DICT_CONST] - 1;
-      playMovie(hoveredMovie);
-    });
+  replayButton.addEventListener('click', function () {
+    // playMovieOnClick(hoveredMovie);
+    currentMovieIndex = moviesDict[hoveredMovie][MOVIE_ORDER_DICT_CONST] - 1;
+    playMovie(hoveredMovie);
+  });
 
-    playButton.addEventListener('click', function () {
-      clickHandler();
-      if (moviesNamesList[currentMovieIndex] === hoveredMovie) {
-        showMenu();
-      } else {
-        currentMovieIndex = moviesDict[hoveredMovie][MOVIE_ORDER_DICT_CONST] - 1;
-        showMenu();
-        playMovie(hoveredMovie);
-      }
-    });
+  playButton.addEventListener('click', function () {
+    clickHandler();
+    if (moviesNamesList[currentMovieIndex] === hoveredMovie) {
+      showMenu();
+    } else {
+      currentMovieIndex = moviesDict[hoveredMovie][MOVIE_ORDER_DICT_CONST] - 1;
+      showMenu();
+      playMovie(hoveredMovie);
+    }
+  });
 
   videoNode.addEventListener('click', (event) => event.preventDefault());
 
@@ -256,7 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const changeDetails = (movieFileName) => {
     hoveredMovie = movieFileName;
-    roomHeadline.textContent=moviesDict[movieFileName][ROOM_DICT_CONST]
+    roomHeadline.textContent = moviesDict[movieFileName][ROOM_DICT_CONST];
     imageDetails.src = moviesDict[movieFileName][IMAGE_URL_DICT_CONST];
     movieNameHeadline.textContent =
       moviesDict[movieFileName][MOVIE_NAME_DICT_CONST];
@@ -264,13 +265,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (hoveredMovie !== moviesNamesList[currentMovieIndex]) {
       //hide now playing
       nowPlayingHeadline.style.opacity = 0;
-        replayButton.disabled = true;
-        replayButton.classList.add('hidden-button');
+      replayButton.disabled = true;
+      replayButton.classList.add('hidden-button');
     } else {
       nowPlayingHeadline.style.opacity = 1;
       //show now playing
-        replayButton.disabled = false;
-        replayButton.classList.remove('hidden-button');
+      replayButton.disabled = false;
+      replayButton.classList.remove('hidden-button');
     }
     triggerssHeadline.textContent =
       moviesDict[movieFileName][TRIGGERS_DICT_CONST];
@@ -426,14 +427,35 @@ document.addEventListener('DOMContentLoaded', () => {
     direction: 'vertical',
   });
 
-  function disableMouseScroll() {
-    window.addEventListener('wheel', preventWheel, { passive: false });
-  }
+  // function disableMouseScroll() {
+  //   window.addEventListener('wheel', preventWheel, { passive: false });
+  // }
 
-  function preventWheel(e) {
-    e.preventDefault();
-  }
+  // function preventWheel(e) {
+  //   // Allow scrolling on the video node so it can handle volume
+  //   const videoNode = document.getElementById('moviePlayer');
+  //   if (videoNode.contains(e.target)) return;
+
+  //   e.preventDefault();
+  // }
 
   // Call this to disable
-  disableMouseScroll();
+  // disableMouseScroll();
+  // window.addEventListener('wheel', preventWheel, { passive: false });
+
+  // videoNode.addEventListener('wheel', (event) => {
+  //   console.log('Scrolling on video'); // Add this
+  //   event.preventDefault(); // Prevent page from scrolling
+
+  //   // DeltaY > 0 means scroll down → lower volume, up → raise volume
+  // });
+  document.addEventListener('wheel', (event) => {
+    console.log('Global wheel:', event.target);
+    const step = VOL_STEP; // Volume change step
+    if (event.deltaY < 0) {
+      videoNode.volume = Math.min(videoNode.volume + step, 1);
+    } else {
+      videoNode.volume = Math.max(videoNode.volume - step, 0);
+    }
+  });
 });
